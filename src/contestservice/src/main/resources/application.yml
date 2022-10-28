@@ -1,0 +1,14 @@
+spring:
+  data:
+    rest:
+      base-path: /
+  datasource:
+    generate-unique-name: false
+    name: macbookstore
+  jpa:
+    hibernate:
+      ddl-auto: update
+    properties:
+      hibernate:
+        default_schema: public
+

@@ -1,0 +1,6 @@
+target
+wrapper
+mvnw*
+.dockerignore
+Dockerfile
+.gitignore
