@@ -20,6 +20,8 @@ static_resources:
                       routes:
                         - match: { prefix: "/teams" }
                           route: { cluster: teamservice, prefix_rewrite: "/" }
+                        - match: { prefix: "/persons" }
+                          route: { cluster: personservice, prefix_rewrite: "/" }
                         - match: { prefix: "/contests" }
                           route: { cluster: contestservice, prefix_rewrite: "" }
                         - match: { prefix: "/registration" }
@@ -58,6 +60,18 @@ static_resources:
                     socket_address:
                       address: ${TEAM_SERVICE_HOST}
                       port_value: ${TEAM_SERVICE_PORT}
+    - name: personservice
+      type: STRICT_DNS
+      lb_policy: ROUND_ROBIN
+      load_assignment:
+        cluster_name: personservice
+        endpoints:
+          - lb_endpoints:
+              - endpoint:
+                  address:
+                    socket_address:
+                      address: ${PERSON_SERVICE_HOST}
+                      port_value: ${PERSON_SERVICE_PORT}
     - name: grafana
       type: STRICT_DNS
       lb_policy: ROUND_ROBIN

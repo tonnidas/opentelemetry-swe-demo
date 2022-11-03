@@ -14,6 +14,8 @@ services:
       - CONTEST_SERVICE_PORT
       - TEAM_SERVICE_PORT
       - TEAM_SERVICE_HOST
+      - PERSON_SERVICE_PORT
+      - PERSON_SERVICE_HOST
       - GRAFANA_SERVICE_PORT
       - GRAFANA_SERVICE_HOST
       - JAEGER_SERVICE_PORT
@@ -23,6 +25,7 @@ services:
     depends_on:
       - contestservice
       - teamservice
+      - personservice
       - grafana
 
   contestservice:
@@ -44,6 +47,7 @@ services:
       - OTEL_EXPORTER_OTLP_METRICS_TEMPORALITY_PREFERENCE
       - OTEL_SERVICE_NAME=contestservice
       - TEAM_SERVICE_URL=http://${TEAM_SERVICE_HOST}:${TEAM_SERVICE_PORT}
+      - PERSON_SERVICE_URL=http://${PERSON_SERVICE_HOST}:${PERSON_SERVICE_PORT}
     depends_on:
       postgres:
         condition: service_healthy
@@ -65,6 +69,27 @@ services:
       - POSTGRES_HOST=postgres
       - OTEL_EXPORTER_OTLP_TRACES_ENDPOINT
       - OTEL_SERVICE_NAME=teamservice
+    depends_on:
+      postgres:
+        condition: service_healthy
+
+  personservice:
+    build:
+      context: ./src/personservice
+    deploy:
+      resources:
+        limits:
+          memory: 100M
+    ports:
+      - "${PERSON_SERVICE_PORT}"
+    environment:
+      - PERSON_SERVICE_PORT
+      - POSTGRES_USER
+      - POSTGRES_PASSWORD
+      - POSTGRES_DB
+      - POSTGRES_HOST=postgres
+      - OTEL_EXPORTER_OTLP_TRACES_ENDPOINT
+      - OTEL_SERVICE_NAME=personservice
     depends_on:
       postgres:
         condition: service_healthy
